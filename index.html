@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Content Studio">
+<title>Content Studio</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+body{background:#0A0A0A;color:#FAF7F5;font-family:Georgia,serif;max-width:430px;margin:0 auto;min-height:100vh;padding-bottom:90px;}
+button{font-family:Georgia,serif;cursor:pointer;border:none;background:none;color:inherit;}
+textarea{font-family:Georgia,serif;}
+.screen{display:none;padding:24px 18px 20px;}
+.screen.active{display:block;}
+.sec-lbl{font-size:10px;color:#555;text-transform:uppercase;letter-spacing:.18em;margin:18px 0 10px;}
+.pill-row{display:flex;flex-wrap:wrap;gap:7px;}
+.pill{display:inline-flex;align-items:center;gap:5px;padding:8px 13px;border-radius:20px;border:1px solid #2A2A2A;background:transparent;color:#666;font-size:13px;white-space:nowrap;}
+.pill.on{color:#FAF7F5;}
+.gen-btn{width:100%;padding:15px;border-radius:13px;font-size:15px;font-weight:700;color:#000;margin-top:20px;border:none;}
+.block{background:#111;border-radius:12px;border:1px solid #1E1E1E;margin-bottom:10px;overflow:hidden;}
+.blk-hdr{display:flex;justify-content:space-between;align-items:center;padding:11px 14px;cursor:pointer;}
+.blk-lbl{font-size:10px;text-transform:uppercase;letter-spacing:.15em;font-weight:600;}
+.blk-body{padding:13px 14px;border-top:1px solid #1E1E1E;font-size:13px;line-height:1.75;color:#CCC;white-space:pre-wrap;word-break:break-word;}
+.cp-btn{padding:5px 12px;border-radius:6px;border:1px solid #333;background:#1A1A1A;color:#888;font-size:11px;flex-shrink:0;}
+.cp-btn.ok{background:#1A3A1A !important;color:#4CAF50 !important;border-color:#2A4A2A !important;}
+.nav-bar{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:#0D0D0D;border-top:1px solid #1E1E1E;display:flex;justify-content:space-around;padding:11px 0;}
+.nav-btn{display:flex;flex-direction:column;align-items:center;gap:3px;color:#444;font-size:10px;letter-spacing:.08em;text-transform:uppercase;padding:0 16px;}
+.nav-btn.on{color:#C8A951;}
+.eco-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px;margin-bottom:24px;}
+.eco-card{padding:16px 10px;border-radius:14px;text-align:center;cursor:pointer;border:1px solid transparent;}
+.plat-list{display:flex;flex-direction:column;gap:8px;margin-bottom:20px;}
+.plat-row{display:flex;align-items:center;gap:13px;padding:13px 15px;border-radius:12px;background:#111;border:1px solid #1E1E1E;cursor:pointer;}
+.plat-ico{width:33px;height:33px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;flex-shrink:0;}
+.img-sec{background:#0D0D0D;border:1px solid #333;border-radius:12px;margin-bottom:10px;overflow:hidden;}
+.img-hdr{display:flex;justify-content:space-between;align-items:center;padding:13px 14px;cursor:pointer;}
+.row2{display:flex;gap:8px;margin-bottom:10px;}
+.box2{flex:1;border-radius:10px;padding:11px 13px;}
+.mini{font-size:10px;text-transform:uppercase;letter-spacing:.1em;margin-bottom:3px;}
+.tip-box{background:#0A0A0A;border:1px solid #1A1A1A;border-radius:10px;padding:11px 13px;margin-bottom:14px;}
+.big-cp{padding:10px 16px;border-radius:8px;border:1px solid #333;background:#1A1A1A;color:#888;font-size:12px;margin-top:4px;width:100%;text-align:left;}
+textarea{width:100%;min-height:66px;padding:11px 13px;background:#111;border:1px solid #2A2A2A;border-radius:10px;font-size:13px;resize:none;line-height:1.5;margin-bottom:4px;color:#FAF7F5;}
+textarea::placeholder{color:#444;}
+.back-row{display:flex;align-items:center;gap:4px;margin-bottom:26px;}
+.badge{padding:3px 8px;border-radius:5px;font-size:10px;}
+.res-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;margin-top:28px;}
+</style>
+</head>
+<body>
+<div style="height:44px;"></div>
+
+<div id="s-home" class="screen active">
+  <div style="text-align:center;margin-bottom:32px;">
+    <div style="font-size:34px;margin-bottom:8px;">🦋</div>
+    <h1 style="font-size:21px;font-weight:700;margin-bottom:4px;">Content Studio</h1>
+    <div style="font-size:10px;color:#444;letter-spacing:.2em;text-transform:uppercase;">Vehleshia Hodnett · Private</div>
+  </div>
+  <div class="sec-lbl" style="margin-top:0;">My Ecosystems</div>
+  <div class="eco-grid" id="eco-grid"></div>
+  <div class="sec-lbl" style="margin-top:0;">By Platform</div>
+  <div class="plat-list" id="plat-list"></div>
+  <button id="home-img-btn" style="width:100%;padding:15px;border-radius:13px;border:1px solid #A07BC840;background:#0D0A14;display:flex;align-items:center;justify-content:center;gap:10px;">
+    <span style="font-size:18px;">🎨</span>
+    <span style="font-size:14px;font-weight:600;color:#A07BC8;">AI Image Prompts Only</span>
+  </button>
+</div>
+
+<div id="s-create" class="screen">
+  <div class="back-row">
+    <button id="back-create" style="font-size:24px;color:#666;padding:0 8px 0 0;">‹</button>
+    <div>
+      <div style="font-size:18px;font-weight:700;">Create Content</div>
+      <div style="font-size:11px;color:#555;">Instant · On-brand · Ready to post</div>
+    </div>
+  </div>
+  <div class="sec-lbl" style="margin-top:0;">Ecosystem</div><div class="pill-row" id="c-eco"></div>
+  <div class="sec-lbl">Platform</div><div class="pill-row" id="c-plat"></div>
+  <div class="sec-lbl">Format</div><div class="pill-row" id="c-fmt"></div>
+  <div class="sec-lbl">Mood</div><div class="pill-row" id="c-mood"></div>
+  <div class="sec-lbl">Aesthetic</div><div class="pill-row" id="c-aes"></div>
+  <div class="sec-lbl">Topic / Angle (optional)</div>
+  <textarea id="topic" placeholder="e.g. bank reconciliation · rebuilding after divorce · leave blank to auto-pick"></textarea>
+  <button class="gen-btn" id="gen-btn">Generate 🦋</button>
+  <div id="result"></div>
+</div>
+
+<div id="s-image" class="screen">
+  <div class="back-row">
+    <button id="back-image" style="font-size:24px;color:#666;padding:0 8px 0 0;">‹</button>
+    <div>
+      <div style="font-size:18px;font-weight:700;">AI Image Prompts</div>
+      <div style="font-size:11px;color:#555;">Your AI twin, every platform</div>
+    </div>
+  </div>
+  <div class="sec-lbl" style="margin-top:0;">Ecosystem</div><div class="pill-row" id="i-eco"></div>
+  <div class="sec-lbl">Aesthetic</div><div class="pill-row" id="i-aes"></div>
+  <div class="sec-lbl">Mood / Energy</div><div class="pill-row" id="i-mood"></div>
+  <div class="sec-lbl">Custom Scene (optional)</div>
+  <textarea id="img-scene" placeholder="e.g. rooftop golden hour CEO look · leave blank for auto"></textarea>
+  <button id="gen-img-btn" class="gen-btn" style="background:linear-gradient(135deg,#A07BC8,#5B3A8C);color:#fff;">Generate Image Prompts 🎨</button>
+  <div id="img-result"></div>
+</div>
+
+<div class="nav-bar">
+  <button class="nav-btn on" id="n-home"><span style="font-size:18px;">🏠</span><span>Home</span></button>
+  <button class="nav-btn" id="n-create"><span style="font-size:18px;">✏️</span><span>Create</span></button>
+  <button class="nav-btn" id="n-image"><span style="font-size:18px;">🎨</span><span>Images</span></button>
+</div>
+
+<script>
+// ── COPY (safe, no text in HTML attributes) ───────────────────────────────────
+var STORE = {};
+var STORE_N = 0;
+
+function storeText(txt) {
+  var id = 'k' + (++STORE_N);
+  STORE[id] = txt;
+  return id;
+}
+
+function doCopy(storeId, btnEl) {
+  var txt = STORE[storeId];
+  if (!txt) return;
+  function win() {
+    btnEl.textContent = 'Copied!';
+    btnEl.classList.add('ok');
+    setTimeout(function(){ btnEl.textContent = 'Copy'; btnEl.classList.remove('ok'); }, 2000);
+  }
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(txt).then(win).catch(function(){ fallback(txt, win); });
+  } else {
+    fallback(txt, win);
+  }
+}
+
+function fallback(txt, onWin) {
+  var el = document.createElement('textarea');
+  el.value = txt;
+  el.setAttribute('readonly', '');
+  el.style.position = 'absolute';
+  el.style.left = '-9999px';
+  document.body.appendChild(el);
+  el.focus();
+  el.setSelectionRange(0, el.value.length);
+  var ok = false;
+  try { ok = document.execCommand('copy'); } catch(e) {}
+  document.body.removeChild(el);
+  if (ok) onWin();
+}
+
+// ── DATA ──────────────────────────────────────────────────────────────────────
+var ECO = {
+  blc:{id:'blc',name:'Butterfly Ledger',short:'BLC',color:'#C8A951',accent:'#8B6914',tagline:'Chaos to Clarity',emoji:'🦋',
+    signoffs:['🦋','Chaos to Clarity 🦋','— V 🦋','Financial clarity changes everything. 🦋'],
+    ctas:['Comment BLUEPRINT','Comment CLARITY','DM me ledger','Link in bio 🦋','Save this for later','Comment TAX'],
+    tags:{core:['bookkeeping','chaostoclarity','butterflyledger','financialclarity','womenentrepreneurs'],education:['bookkeeping101','smallbusiness','financialtips','businessfinance','accountingtips'],healing:['financialhealing','moneymindset','rebuilding','womenandmoney','financialpeace'],softlife:['softlife','quietluxury','feminineceo','softceo','luxurylifestyle'],story:['founderstory','entrepreneurlife','singlemomentrepreneur','buildingmydream','behindthebusiness']},
+    imgBase:'cinematic photograph of a slim thick Black woman with full bust, curvy hips and defined waist, deep brown dewy skin with a soft everyday glam — defined lashes, subtle eyeshadow, glossy or satin lip — mid-back natural locs styled in a sleek high bun with perfectly laid edges, bold rectangular green tortoiseshell designer glasses (always fully on face, never removed), gold hoop earrings, Clarity pendant in rose gold. Elevated designer fashion — fitted silk midi dress in blue or purple, or tailored wide-leg trousers with a fitted crop top, or a chic co-ord set that highlights her curves. Strappy stilettos, wedges, or pointed-toe heels. No blazers ever. Fashion-forward business woman energy. Photorealistic, 4K cinematic',
+    imgAlts:['cinematic photograph of a slim thick Black woman with full bust, curvy hips and defined waist, deep brown dewy skin with a soft glam beat — wispy lashes, subtle champagne eyeshadow, glossy nude lip — mid-back locs in a sleek bun with perfectly laid edges, green tortoiseshell glasses always on face, gold hoops, Clarity pendant. She is on a Zoom call in a beautifully decorated home, laptop open, ring light glow. She wears a fitted deep blue silk top that highlights her curves, gold jewelry. Confident relaxed CEO energy. No blazer. Photorealistic, 4K','cinematic photograph of a slim thick Black woman with full bust, curvy hips and defined waist, deep brown dewy skin with soft glam — fluttery lashes, soft purple smoky eye, satin lip — locs in a high bun with laid edges, green tortoiseshell glasses always on face, gold hoops, Clarity pendant. She sits at the head of a sleek modern boardroom table. Fitted purple or cobalt blue co-ord set, strappy gold stilettos, gold accessories, iPad in front of her. She owns the room. No blazer. Photorealistic, 4K','cinematic lifestyle photograph of a slim thick Black woman with full bust, curvy hips and defined waist, deep brown dewy skin with a natural glam finish — defined brows, soft lashes, berry lip — locs half-up half-down with laid edges, green tortoiseshell glasses always on face, chunky gold hoops and layered necklaces. Walking through a luxury hotel lobby or co-working space, phone to ear on a business call, designer tote on one shoulder, royal blue silk midi dress that flows over her curves, pointed-toe gold stilettos. Powerful in motion. No blazer. Photorealistic, 4K cinematic','warm cinematic photograph of a slim thick Black woman with full bust, curvy hips and defined waist, deep brown dewy skin with a dewy soft glam — lashes, soft lilac or blush eyeshadow, glossy lip — locs worn down with a deep side part, green tortoiseshell glasses always on face, gold hoops. She sits cross-legged on a luxury cream sofa with a laptop. Fitted deep purple or sapphire blue ribbed matching set that hugs her curves beautifully, gold slides, iced coffee nearby, beautiful natural light. Relaxed boss energy. No blazer. Photorealistic, 4K']},
+  hsl:{id:'hsl',name:'HerSoftLife Ledger',short:'HSL',color:'#B07FC4',accent:'#7A3F91',tagline:'Heal. Breathe. Rebuild.',emoji:'🌸',
+    signoffs:['🌸','Heal. Breathe. Rebuild. 🌸','— V 🌸','Your soft life is waiting. 🌸'],
+    ctas:['Drop a flower if this hit home','Save this for your healing era','Follow for more','Comment SOFT','Share with a woman who needs this','Reply below'],
+    tags:{core:['hersoftlifeledger','healingera','softlife','womenhealing','rebuildingmylife'],education:['financialwellness','moneymindset','womenandmoney','financialclarity','healyourrelationshipwithmoney'],healing:['divorcedandthriving','startingover','newchapter','healingjourney','emotionalwellness'],softlife:['softlifestandard','quietluxury','intentionalliving','femininewellness','selfcarefirst'],story:['realmomlife','buildinginpublic','transparentjourney','myrebuild','capricornwoman']},
+    imgBase:'cinematic lifestyle photograph of a slim thick Black woman with full bust, curvy hips and defined waist, deep brown dewy skin with a soft natural finish and wispy lashes, mid-back natural locs worn down freely or in a loose bun, bold rectangular green tortoiseshell designer glasses (always on face, never removed), gold hoop earrings, Butterfly pendant in rose gold. She is living her best soft healing life — cozy, fun, and completely free. Silk pajama sets in lavender or blue, plush robes, cute loungewear, fuzzy slippers. Inside a gorgeous mansion or luxury home — never an office, never a desk. Photorealistic, warm lifestyle aesthetic, 4K',
+    imgAlts:['cinematic cozy photograph of a slim thick Black woman with full bust, curvy hips and defined waist, deep brown dewy skin with a minimal soft glam — wispy lashes, soft pink lip — locs in a loose messy bun, green tortoiseshell glasses always on face, gold hoops, Butterfly pendant. She is curled up on a massive plush sectional sofa in a stunning mansion living room, plush lavender or dusty blue blanket wrapped around her, bowl of popcorn in hand, watching TV with a soft smile. Silk lilac pajama set. Warm lamp light. Pure cozy mansion healing vibes. Photorealistic, 4K','warm cinematic photograph of a slim thick Black woman with full bust, curvy hips and defined waist, deep brown dewy skin with a fresh dewy finish and soft lashes, locs worn down freely, green tortoiseshell glasses always on face, gold hoops. She stands in a stunning chef kitchen in a luxury mansion, royal blue or periwinkle silk robe that drapes over her curves, making her morning espresso. Fresh flowers on the marble counter, sunlight pouring through large windows. Healing morning energy. Photorealistic, 4K','soft cinematic lifestyle photograph of a slim thick Black woman with full bust, curvy hips and defined waist, deep brown dewy skin with a glam beat — dramatic lashes, soft purple smoky eye, glossy lip — locs in a loose half-up style, green tortoiseshell glasses always on face, gold hoops, Butterfly pendant. She soaks in a gorgeous freestanding bathtub in a spa-like master bathroom, blue and purple floating candles, rose petals, champagne flute on the edge. Silk cobalt blue robe draped over a nearby chair. Pure luxury self-care. Photorealistic, 4K','fun cinematic photograph of a slim thick Black woman with full bust, curvy hips and defined waist, deep brown dewy skin with a cute natural glam — lashes, glossy lip, soft highlight — locs worn down with a deep side part, green tortoiseshell glasses always on face, gold hoops. She dances freely in an open-plan luxury living room with purple and blue ambient lighting, cute fitted blue matching lounge set that shows off her curves, one hand in the air holding her phone playing music, laughing. Joy in the rebuild. Photorealistic, 4K']},
+  personal:{id:'personal',name:'Vehleshia Hodnett',short:'Personal',color:'#7B9FBF',accent:'#3D6B8C',tagline:'Building in the Becoming',emoji:'🌙',
+    signoffs:['🌙','— V 🌙','Building in the becoming 🦋','🦋'],
+    ctas:['Drop a butterfly if you needed this','Reply below','Follow along 🌙','Share with your people','Save this for your rebuild'],
+    tags:{core:['rebuilding','softlife','singlemomentrepreneur','womenentrepreneurs','buildingmydream'],education:['moneytips','financialmindset','womenandmoney','budgeting','financialfreedom'],healing:['healingera','rebuildingmylife','divorcedandthriving','startingover','newchapter'],softlife:['softlifestandard','quietluxury','intentionalliving','femininewellness','selfcare'],story:['realmomlife','transparententrepreneur','buildinginpublic','myjourney','capricornseason']},
+    imgBase:'cinematic lifestyle photograph of a Black woman, deep brown dewy skin, mid-back natural locs worn down freely or in a casual bun with laid edges, bold rectangular black-and-white marbled designer glasses (always fully on face, never tilted or removed), gold hoop earrings, Clarity pendant in gold. Style is effortlessly cool and off-duty: urban baddie meets soft intentional living. Think fitted two-piece sets, oversized hoodies, biker shorts with cropped tops, streetwear-luxury layering, white sneakers or slides, chunky gold accessories. Not corporate, not stiff. Real woman energy. Photorealistic, cinematic lifestyle aesthetic, 4K',
+    imgAlts:['cinematic street style portrait of a slim thick Black woman with full bust, curvy hips and defined waist, deep brown dewy skin with a baddie glam beat — dramatic lashes, soft brown smoky eye, glossy nude lip, highlighted cheekbones — mid-back locs worn down with a deep side part, bold rectangular marbled glasses always on face, chunky gold hoops, Clarity pendant. She wears a fitted royal blue ribbed two-piece set that hugs every curve, white sneakers, leaning against a colorful city mural. Golden hour light. Urban baddie confidence. Photorealistic, 4K cinematic','soft lifestyle shot of a slim thick Black woman with full bust, curvy hips and defined waist, deep brown dewy skin with a fresh natural glam — wispy lashes, soft blush, glossy lip — locs in a messy casual high bun with laid edges, bold rectangular marbled glasses always present, gold hoops. She sits cross-legged on a cream couch in a cozy home setting, wearing a fitted blue or purple biker short set that shows off her figure, iced coffee and phone nearby. Natural morning light. Real soft living energy. Photorealistic, 4K','cinematic urban portrait of a slim thick Black woman with full bust, curvy hips and defined waist, deep brown dewy skin with a full baddie glam — sharp lashes, sultry purple eyeshadow, satin lip, glowing skin — locs in a sleek high ponytail with laid edges, bold rectangular marbled glasses always on face, layered gold chains and chunky hoop earrings. She wears a fitted deep purple or cobalt blue bodycon outfit or leather-look set, white sneakers or heels, standing in front of a luxury car or city backdrop. Unbothered baddie. Photorealistic, editorial street style, 4K','warm cinematic lifestyle shot of a slim thick Black woman with full bust, curvy hips and defined waist, deep brown dewy skin with an effortless everyday glam — lashes, soft blue or lavender eyeshadow, glossy lip — locs worn down naturally, bold rectangular marbled glasses always on face, gold hoops. Sitting at a cafe window or outdoor patio, coffee in hand, wearing a fitted cropped periwinkle or lilac hoodie and wide leg joggers. City street visible behind her. Effortless beauty. Photorealistic, 4K']}
+};
+
+var PLAT = {
+  tiktok:{id:'tiktok',name:'TikTok',icon:'TT',color:'#69C9D0',formats:['Talking Head','POV Style','Storytime','Mini Lesson','Trend Hook','Day in the Life'],maxTags:5},
+  instagram:{id:'instagram',name:'Instagram',icon:'IG',color:'#F77737',formats:['Reel','Carousel','Talking Head','Quote Graphic','Story Sequence','Editorial Photo'],maxTags:8},
+  threads:{id:'threads',name:'Threads',icon:'@',color:'#AAAAAA',formats:['Hot Take','Conversation Starter','Affirmation','Vulnerable Share','Question Post','Weekly Reset'],maxTags:0},
+  facebook:{id:'facebook',name:'Facebook',icon:'FB',color:'#1877F2',formats:['Community Post','Educational Post','Storytelling','Soft Sell','Engagement Question'],maxTags:3},
+  linkedin:{id:'linkedin',name:'LinkedIn',icon:'in',color:'#0A66C2',formats:['Thought Leadership','Professional Story','Accounting Insight','Career Journey','Industry Take'],maxTags:5}
+};
+
+var MOODS = [
+  {id:'healing',label:'Healing Vibes',e:'🌸'},
+  {id:'educate',label:'Teach Mode',e:'📊'},
+  {id:'luxury',label:'Soft Life',e:'✨'},
+  {id:'bold',label:'Bold and Direct',e:'⚡'},
+  {id:'story',label:'Founder Story',e:'📖'},
+  {id:'sell',label:'Soft Sell',e:'💛'}
+];
+
+var AES = [
+  {id:'editorial',label:'Editorial',e:'🖤'},
+  {id:'cozy',label:'Cozy Luxury',e:'☕'},
+  {id:'corporate',label:'Corporate Chic',e:'💼'},
+  {id:'golden',label:'Golden Hour',e:'🌅'},
+  {id:'marble',label:'Marble and Gold',e:'🤍'},
+  {id:'dark',label:'Dark Glam',e:'🌑'},
+  {id:'boston',label:'Boston Grit',e:'🏙️'},
+  {id:'bluetone',label:'Blue and Purple',e:'💙'},
+  {id:'nightout',label:'Night Out',e:'🌃'}
+];
+
+var SCENES = {
+  editorial:['in a minimalist luxury editorial setting, stark white and black tones, dramatic professional lighting, fashion-forward styling, structured blazer, Vogue magazine aesthetic','at a sleek marble desk with gold stationery, editorial overhead lighting, Elle magazine aesthetic, structured power outfit'],
+  cozy:['in a warm penthouse interior, cream linen textures, soft candle glow, steaming coffee on marble surface, cashmere wrap, morning light filtering through sheer curtains','curled into a velvet chair by a large window, warm golden lamp light, open journal and fresh flowers on side table, intentional soft morning energy'],
+  corporate:['at the head of a glass conference table in a modern high-rise executive suite, city skyline through floor-to-ceiling windows, structured navy power suit with gold button details, financial documents and laptop','standing in a sleek corporate lobby, marble floors, commanding presence, tailored blazer, gold accessories'],
+  golden:['on a luxury rooftop at golden hour, warm amber and rose light, city skyline stretching behind her, structured champagne blazer, hair catching the sunset glow','in a penthouse terrace at dusk, string lights beginning to glow, relaxed power pose, golden light wrapping her silhouette'],
+  marble:['luxury flat lay on marble surface: Montblanc pen, gold-edged planner, rose gold laptop, butterfly figurine, fresh white peonies, black gold and blush tones, styled overhead editorial shot','marble desk detail: designer glasses beside a gold-accented notebook, manicured hands, coffee in a cream ceramic cup, editorial lifestyle photography'],
+  dark:['in a dramatic dark luxury setting, deep charcoal or midnight walls, single gold-toned side light, moody cinematic atmosphere, wearing a sleek fitted black outfit that hugs her curves, editorial noir energy, no blazer','against a deep navy backdrop, dramatic chiaroscuro lighting, gold accessories glowing in shadow, fitted designer look, cinematic portraiture, high contrast editorial mood'],
+  boston:['on a rooftop in a gritty chic urban Boston-inspired setting, exposed brick and steel in the background, city skyline visible, golden hour light cutting through industrial architecture, wearing a fitted blue or purple street-luxury outfit, confident city girl energy, Boston bred and unbothered','standing on a cobblestone street in an upscale New England neighborhood, fall leaves or city energy in the background, wearing a chic fitted monochrome outfit in deep navy or royal blue, oversized sunglasses, gold jewelry, effortless coastal city cool vibes','in a high-rise apartment with floor-to-ceiling windows overlooking a dense city skyline at dusk, Boston or New York energy, wearing a fitted purple or blue co-ord, hair laid, glam on point, city lights beginning to glow behind her, unbothered queen energy'],
+  bluetone:['in a dreamy blue and purple toned setting — soft lavender walls, royal blue velvet sofa, purple and blue flower arrangements, wearing a stunning cobalt blue fitted outfit that highlights her curves, soft studio lighting, everything bathed in a cool blue-purple palette, editorial fantasy vibes','surrounded by rich jewel tones — sapphire blue and deep violet fabrics, purple neon accent lighting, wearing a fitted royal blue or deep purple bodycon dress, gold jewelry glowing against the rich colors, cinematic beauty editorial, stunning and powerful','in a luxury penthouse at twilight with blue and purple ambient lighting, periwinkle and lavender cushions, wearing a deep blue silk fitted set, the city glowing purple and blue through the windows behind her, dreamy and intentional'],
+  nightout:['cinematic night out photograph, standing outside a luxury venue or rooftop bar at night, city lights glittering behind her, wearing a stunning fitted blue or purple going-out dress or sequined two-piece that hugs every curve, strappy heels, bold glam makeup, lashes and all, gold jewelry, looking like money','inside a chic rooftop lounge or upscale restaurant, warm candlelight and city views, wearing a fitted satin midnight blue or deep purple midi dress, strappy gold heels, full glam — dramatic lashes, purple or smoky eye, bold satin lip, gold accessories, she is the most beautiful woman in the room','at a luxury event or gala setting, wearing a showstopping fitted royal blue or deep purple gown or tailored jumpsuit that showcases her slim thick figure, full glam makeup, lashes, eyeshadow, chandelier earrings, gold accessories, confidence radiating, editorial red carpet energy']
+};
+
+var ANIM = [
+  'Cinematic slow zoom in — camera begins wide on the luxury setting, gradually pulling into a medium portrait. Golden particles drift like tiny butterflies. Color grade: rich blacks, champagne gold, soft cream. Ambient low piano score. Duration: 8-12 seconds.',
+  'Slow motion hair movement — locs shift softly as subject turns from window to camera. Sunlight catches glasses frames and pendant. Color grade: deep black, golden amber, blush highlight. Duration: 6-8 seconds.',
+  'Editorial reveal — split-second black screen cut to full portrait, then slow push-in. Text overlay: Chaos to Clarity in gold. Single sustained piano chord. Duration: 10 seconds.',
+  'Ambient lifestyle loop — subject at desk in soft morning light. Steam rising from coffee, slight breeze through locs, fingers on keyboard. Quiet authority. Perfect for background reel. Duration: 15-20 second loop.',
+  'Butterfly transition — opens on close detail (pen on notebook, coffee cup, glasses on desk), soft cut to full portrait as a butterfly dissolves at frame edge. Warm cinematic grade. Duration: 10-12 seconds.'
+];
+
+var HOOKS = {
+  blc:{
+    healing:['Nobody taught us this about money — and that is not your fault.','You are not bad with money. You were just never taught.','The embarrassment I felt about my finances was the beginning of my transformation.','I had an MBA and still had to rebuild my finances from scratch.','Financial shame is real. But it is not your final chapter.'],
+    educate:['Your bank account is lying to you right now. Here is proof.','3 numbers every business owner needs to know — most do not.','The reason your books are a mess has nothing to do with discipline.','POV: Your accountant asks for your 2024 records.','If your bank balance and your profit were the same thing, we need to talk.'],
+    luxury:['Soft life is not a destination. It is a standard you set right now.','The most luxurious thing you can do is understand your money.','CEO energy starts with knowing your numbers.','Quiet wealth starts with quiet clarity.','What does financial peace actually look like? Let me show you.'],
+    bold:['Stop avoiding your books. The chaos does not disappear when you look away.','I am going to say what your accountant will not: most small businesses have messy books.','The truth about profit that nobody posts on Instagram.','Tax season panic is optional. Bookkeeping clarity is available.','You cannot grow a business you do not understand financially.','Soft but savage. I will say what your CPA will not: you need to fix your books.','The Savage Bookkeeper in me has to be honest — your financial chaos is a choice at this point.','Being soft does not mean being sloppy with your money. Fix your books.','You want CEO results but you have chaos bookkeeping. Let us fix that today.','Savage truth: if you cannot read your own P&L you do not actually run your business.'],
+    story:['I rebuilt my entire financial life from scratch as a single mom building a business.','There was a season I was too embarrassed to open my bookkeeping software.','The moment I stopped avoiding my numbers, everything changed.','I did not start Butterfly Ledger for the money. I started it because I needed it first.','Building a business while rebuilding your life looks like this.'],
+    sell:['If your business books are a mess, I built something specifically for you.','The Beginners Bookkeeping Blueprint exists because I needed it first.','What if understanding your numbers took less than an hour a week?','You deserve to know exactly what your business made this month.','I am opening the Blueprint back up — here is everything that is inside.','Soft but savage offer: the Blueprint will teach you more in one weekend than years of confusion.','The Savage Bookkeeper built this so you would never have to guess your profit again.','Real ones invest in their financial clarity. The Blueprint is how we do that.']
+  },
+  hsl:{
+    healing:['Healing is not linear. And your finances do not have to be either.','You are allowed to start over. As many times as you need to.','The soft life is not for women who have it all together. It is for women choosing to build peace anyway.','Nobody told me that rebuilding financially would also rebuild who I was.','There is a version of you on the other side of the financial chaos. She is waiting.'],
+    educate:['3 money habits that changed my life during the hardest season of my rebuild.','What nobody tells you about managing money alone for the first time.','Your relationship with money is also a healing journey.','The financial foundation every woman in her rebuild era needs to know about.','Soft life does not mean ignoring your money. It means making peace with it.'],
+    luxury:['The soft life starts with a soft relationship with your finances.','Healing looks like this: calm mornings, clear books, and a life you actually chose.','You deserve the soft life AND financial clarity. Not one or the other.','Peace of mind is the most luxurious thing you can own.','I decided to stop waiting to feel healed before I started living softly.'],
+    bold:['Stop putting your financial healing on hold because life got hard.','You can be soft and still be serious about your money.','The version of you who keeps avoiding her finances is keeping you small.','Healing your relationship with money is one of the most radical things a woman can do.','Your soft life is on the other side of financial clarity. Build the bridge.'],
+    story:['I used to think soft life was something I would earn after the healing was done.','The rebuild was not pretty. But it was mine. And it made me her.','Here is what no one tells you about rebuilding your life from the ground up.','Starting over at this chapter was not in my plan. It became my purpose.','I chose soft life not when everything was perfect — but when I was still in the mess.'],
+    sell:['For the woman who is ready to make peace with her money and build something beautiful.','The tools I used to get financially clear during the hardest season of my life.','If you are in your rebuild era and your finances feel like chaos — this is for you.','HerSoftLife Ledger exists for women who deserve clarity AND peace.','You do not have to choose between healing and building. You can do both.']
+  },
+  personal:{
+    healing:['Something shifted the moment I stopped treating my finances like a secret.','Rebuilding publicly because someone needs to see it is possible.','The cocoon is uncomfortable. That is the point.','Single mom. Entrepreneur. Rebuilding. This is what it actually looks like.','I did not think I would be starting over at this point in my life.'],
+    educate:['What I know about money now that I wish I knew at 25.','The financial lesson that changed the way I run my business.','If you are a woman building a business, you need to hear this.','3 things I do every month to stay financially clear in my business.','The difference a bookkeeping system makes — from someone who did not have one.'],
+    luxury:['Soft life Friday as a single mom building a business looks like this.','The standard I set for myself does not change based on where I am in the journey.','Luxury is also a mindset. Here is how I practice it daily.','You do not have to wait until everything is perfect to live beautifully.','Intentional mornings. Clear finances. Calm CEO energy. That is the goal.'],
+    bold:['Accountability post: this is where I actually am right now.','I am building in public because I am tired of the highlight reel culture.','What nobody tells you about building a business alone.','I am going to be honest about something most entrepreneurs will not say.','The rebuild is not linear. And that is okay.'],
+    story:['The year I rebuilt everything — finances, identity, and my future.','Here is what single motherhood and entrepreneurship have in common.','I used to be ashamed of where I was. Now it is my greatest qualification.','Capricorn season reminder: slow and steady does not mean stopped.','The butterfly does not announce the transformation. It just emerges.'],
+    sell:['The tools I use to keep my business finances clear — even on the hard weeks.','What I wish I had when I was starting over financially.','For the woman in her rebuild era who needs a financial foundation.','This resource changed how I look at my business numbers.','I made this for you. The woman who is ready to understand her money.']
+  }
+};
+
+var SCRIPTS = {
+  tiktok:{
+    healing:['[0-2 sec HOOK]\n{HOOK}\n\n[2-13 sec BODY]\nSay: Most of the women I talk to carry financial shame they have never said out loud. They feel like they should know more, do better, have it together by now. But here is what I know: financial confusion is taught. It is not a character flaw.\n\n[13-23 sec SHIFT]\nSay: The moment you decide to look — really look at your numbers — you take your power back. That is where the rebuild starts. Not when everything is perfect. Right now.\n\n[23-28 sec CTA]\n{CTA}'],
+    educate:['[0-2 sec HOOK]\n{HOOK}\n\n[2-15 sec LESSON]\nSay: Here is what most people do not understand: your bank balance shows what is in your account right now. Your profit shows what your business actually earned after expenses. These are two very different numbers — and only one tells you if your business is working.\n\n[15-23 sec EXAMPLE]\nSay: Say your account shows 4000 dollars. But you have 1500 in bills due, 600 in platform fees, 400 in taxes owed. Your real position? Closer to 1500.\n\n[23-28 sec CTA]\n{CTA}','[0-2 sec HOOK]\n{HOOK}\n\n[2-18 sec BREAKDOWN]\nSay: Number one: Gross Revenue — everything that came in. Number two: Net Profit — what you kept after expenses. Number three: Cash Flow — what is actually available right now. Most small business owners only know number one. That is why tax season feels like a disaster.\n\n[18-26 sec CLOSE]\nSay: When you know all three, you make decisions like a CEO instead of guessing like a beginner.\n\n[26-28 sec CTA]\n{CTA}'],
+    luxury:['[0-2 sec HOOK]\n{HOOK}\n\n[2-15 sec REFRAME]\nSay: I used to think the soft life was something I would earn after I made it. The penthouse, the calm mornings, the freedom. And then I realized — the soft life is a standard, not a milestone. You do not wait for it. You decide.\n\n[15-24 sec CONNECT]\nSay: For me, that decision started with understanding my money. Because real peace comes from knowing where you stand. Financial clarity IS the soft life.\n\n[24-28 sec CTA]\n{CTA}'],
+    bold:['[0-2 sec HOOK]\n{HOOK}\n\n[2-12 sec TRUTH]\nSay: I am going to say something your accountant might be too polite to say: if you do not know your numbers, you are making decisions in the dark. Every purchase, every hire, every investment — guesswork without a system.\n\n[12-22 sec SOLUTION]\nSay: The fix is not complicated. It is consistent. A simple bookkeeping habit — even 30 minutes a week — changes your entire financial picture within 90 days.\n\n[22-28 sec CTA]\n{CTA}'],
+    story:['[0-3 sec HOOK]\n{HOOK}\n\n[3-18 sec STORY]\nSay: There was a point in my rebuild where I had the credentials, the degree, the experience — and I still felt behind. Because life happened. Divorce happened. Starting over happened. And I had to decide: was I going to let shame be the narrative, or was I going to let it be the fuel?\n\n[18-26 sec SHIFT]\nSay: I chose fuel. I built Butterfly Ledger. Not in spite of the hard season — because of it.\n\n[26-30 sec CTA]\n{CTA}'],
+    sell:['[0-3 sec HOOK]\n{HOOK}\n\n[3-15 sec PROBLEM]\nSay: If you started your business to make money — not to become an accountant — I see you. But not understanding your numbers is costing you. You are leaving money on the table, missing deductions, operating on vibes instead of data.\n\n[15-22 sec OFFER]\nSay: The Beginners Bookkeeping Blueprint walks you through everything from accounting basics to bank reconciliations — plain language, no jargon, no judgment. 67 dollars for the full bundle.\n\n[22-28 sec CTA]\n{CTA}']
+  },
+  threads:{
+    healing:['{HOOK}\n\nNot a lecture. Not a lesson. Just a reminder that you did not fail — you were failed by a system that never taught you this.\n\nThe rebuild starts with that truth.\n\nWhat is one thing about money you wish you had been taught earlier? Drop it below.','{HOOK}\n\nFinancial shame is one of the quietest heaviest things to carry.\n\nBut it is not your final chapter. It is the beginning of the clarity era.\n\nDrop a butterfly emoji if you are in your rebuild.'],
+    educate:['{HOOK}\n\nQuick breakdown no one asked for but everyone needs:\n\nRevenue = what came in\nExpenses = what went out\nProfit = what you kept\nCash flow = what is available NOW\n\nMost people only track revenue. That is the gap.\n\nWhich of these do you actually know right now? Be honest.','Hot take: most small business owners are guessing.\n\nNot because they are bad at business. Because nobody sat them down and explained the numbers.\n\nWhat is one financial concept you are still fuzzy on? Drop it below — no judgment.'],
+    luxury:['{HOOK}\n\nThe soft life is not a reward for when things are perfect.\n\nIt is a standard you set when things are still in progress.\n\nYou are allowed to choose peace right now. Even in the middle of the build.','Soft life reminder:\n\nYou do not have to hustle yourself into the ground to deserve beautiful things.\n\nRest is productive. Clarity is productive. Intentional slowness is productive.\n\nDrop a sparkle emoji if you needed that today.'],
+    bold:['{HOOK}\n\nAvoidance does not make the chaos smaller. It just gives it more time to grow.\n\nThe bravest thing you can do for your business this week is open your books and look.\n\nWho is doing it this week?','Accountability check:\n\nDo you actually know if your business is profitable right now — or are you guessing based on your bank balance?\n\nNo judgment. Just honest data.\n\nDrop YES or NO below.'],
+    story:['{HOOK}\n\nI am sharing this because I know someone out there is in the middle of their own rebuild and needs to see that you can move forward even when it is messy.\n\nThe butterfly does not announce the transformation. It just emerges.\n\nWhat are you building quietly right now?','Sunday reset for the women building something:\n\nWhat is one thing you are releasing this week and one thing you are calling in?\n\nMine:\nReleasing: the pressure to be further along\nCalling in: aligned momentum and financial clarity\n\nDrop yours below.'],
+    sell:['{HOOK}\n\nThe Beginners Bookkeeping Blueprint is everything I wish I had when I started.\n\nPlain language. No jargon. Real systems. 67 dollars.\n\nIf you have been waiting for a sign — this is it. Link in bio.','Real question: if someone asked you right now what your business profit was this month, could you answer confidently?\n\nIf not — that is what the Blueprint is for.\n\nNot judgment. Just clarity.']
+  },
+  instagram:{
+    healing:['[REEL — Talking Head or AI Twin]\n\nHOOK ON SCREEN: {HOOK}\n\nCAPTION:\n{HOOK}\n\nThe women I work with carry so much financial shame — and none of it is deserved.\n\nYou were not taught this. And now you are building a business AND trying to figure it out at the same time. That takes courage.\n\nThis is your reminder: you are not behind. You are becoming.\n\nChaos to Clarity — one step at a time.\n\n{CTA}'],
+    educate:['[CAROUSEL — 5 Slides]\n\nSlide 1: {HOOK}\nSlide 2: Revenue does not equal Profit\nSlide 3: Your bank balance includes money you still owe\nSlide 4: A simple bookkeeping habit = complete financial clarity\nSlide 5: Ready to get clear? Link in bio\n\nCAPTION:\nSave this. Share it with a business friend who needs it.\n\nFinancial clarity does not require a degree. It requires a system.\n\n{CTA}'],
+    luxury:['[EDITORIAL PHOTO or AI Twin]\n\nCAPTION:\nThis is what Chaos to Clarity looks like in real life.\n\nNot always loud. Not always dramatic. Sometimes it is just a quiet morning, clear books, and the confidence of knowing exactly where you stand.\n\nThat is the soft life I am building. And the one I want for you.\n\n{CTA}'],
+    bold:['[REEL — Direct to camera]\n\nHOOK ON SCREEN: {HOOK}\n\nCAPTION:\n{HOOK}\n\nI say this with full love: the chaos in your business finances is costing you more than the time it would take to fix it.\n\n30 minutes a week. A simple system. Complete clarity.\n\nThat is it. That is the whole thing.\n\n{CTA}'],
+    story:['[TALKING HEAD or Founder photo]\n\nCAPTION:\n{HOOK}\n\nYou are not behind. You are not too late. You are exactly where your story needed you to be.\n\nThe butterfly does not announce the transformation.\n\n{CTA}'],
+    sell:['[REEL — Soft Sell]\n\nHOOK: {HOOK}\n\nCAPTION:\nThe Beginners Bookkeeping Blueprint was not built in a boardroom.\n\nIt was built in the chaos — by a woman who needed it herself.\n\nAccounting basics, accounts receivable, bank reconciliations, month-end close. Plain English. Real templates.\n\n67 dollars for the bundle. Link in bio.\n\n{CTA}']
+  },
+  facebook:{
+    healing:['{HOOK}\n\nI want to say something directly to the women in this community who are embarrassed about their finances.\n\nYou are not alone. And you are not behind.\n\nFinancial confusion is not a character flaw — it is a gap in what most of us were never taught.\n\nEvery person who is financially clear today was once financially confused. The difference is they found a system and stayed consistent.\n\nYou can do the same. One step. One month at a time.\n\n{CTA}'],
+    educate:['{HOOK}\n\nThe gap between what shows up in your bank account and what your business actually earned — they are not the same number.\n\nYour bank balance includes money you still owe: to vendors, in taxes, in platform fees. Your profit is what is left after all of that.\n\nIf you only look at your bank balance, you are making decisions with incomplete information.\n\nStart here: track income, track expenses, subtract. That is the beginning of a P&L. That is the beginning of clarity.\n\n{CTA}'],
+    story:['{HOOK}\n\nI built Butterfly Ledger because I needed it first.\n\nMBA. CPA candidate. Years in accounting. And I still had to start over financially after a major life transition.\n\nCredentials do not make you immune to hardship. But they give you a roadmap for rebuilding faster.\n\nThat is what I want for you.\n\n{CTA}'],
+    luxury:['{HOOK}\n\nSoft life is not just an aesthetic. It is a relationship with yourself and your finances.\n\nWhen you know your numbers, you stop making fear-based decisions. You stop second-guessing every purchase.\n\nThat is the real soft life. Peace. Clarity. Confidence.\n\n{CTA}'],
+    bold:['{HOOK}\n\nIf you cannot answer basic questions about your business finances right now, that needs to change before anything else.\n\nNot to shame you. To free you.\n\nYou cannot grow what you do not understand.\n\n{CTA}'],
+    sell:['{HOOK}\n\nI created the Beginners Bookkeeping Blueprint for this reason.\n\nSo many women are running businesses they do not fully understand financially — not because they are not smart, but because no one ever taught them this part.\n\nThe Blueprint changes that. Plain language. Real systems. 67 dollars.\n\n{CTA}']
+  },
+  linkedin:{
+    educate:['{HOOK}\n\nAfter nearly a decade in accounting — across public accounting, outsourced CFO services, and nonprofit finance — one pattern shows up everywhere:\n\nBusinesses that struggle financially are almost never struggling because of a revenue problem.\n\nThey are struggling because of a clarity problem.\n\nWhen leadership cannot quickly answer:\n- What did we actually profit last quarter?\n- Where are our biggest expense leaks?\n- What does our cash position look like 90 days out?\n\nDecisions get made emotionally instead of strategically.\n\nBookkeeping is not a back-office function. It is a leadership tool.\n\n#bookkeeping #smallbusiness #financialclarity #accounting #womenentrepreneurs'],
+    story:['{HOOK}\n\nI have an MBA. I am a CPA candidate. I have spent years in accounting across multiple sectors.\n\nAnd I still had to rebuild my finances from scratch after a major life transition.\n\nCredentials do not make you immune to financial hardship. What they give you is a roadmap for rebuilding faster.\n\nThat is why I started Butterfly Ledger Consulting.\n\nIf your books are not where you want them, you are not behind. You just need the right system.\n\n#entrepreneurship #womenleaders #financialclarity #accounting #butterflyledger'],
+    bold:['{HOOK}\n\nUnpopular opinion: most small business owners have no idea whether their business is actually profitable.\n\nNot because they do not care. Because the information is not presented in a way they can understand.\n\nFinancial literacy is a leadership skill. It should be accessible — not gatekept behind jargon.\n\n#financialliteracy #bookkeeping #smallbusiness #womenentrepreneurs #accounting'],
+    healing:['{HOOK}\n\nYou can be qualified, experienced, and credentialed — and still need to rebuild.\n\nLife happens to all of us. The difference is having the right tools to come back faster.\n\nThat is what financial clarity gives you.\n\n#womenentrepreneurs #rebuilding #financialclarity #leadership #butterflyledger'],
+    luxury:['{HOOK}\n\nThere is a version of business ownership that feels calm. Confident. Clear.\n\nWhere you know your numbers, trust your systems, and make decisions from data rather than anxiety.\n\nThat is not an accident. It is a practice. And it starts with the right financial foundation.\n\n#businessstrategy #financialclarity #womenleaders #smallbusiness #accountinglife'],
+    sell:['{HOOK}\n\nThe Beginners Bookkeeping Blueprint was built for women running businesses without a reliable financial system.\n\nNot because they are not capable. Because no one ever taught them this part.\n\nLink in comments.\n\n#bookkeeping #smallbusiness #womenentrepreneurs #financialeducation #butterflyledger']
+  }
+};
+
+var TIPS = {
+  tiktok:['Reply to every comment in the first 30 minutes — your number one growth lever right now.','Post between 6-9am or 7-10pm for best reach.','No TikTok watermark if you are cross-posting to IG Reels — IG buries watermarked content.','Comment on your own video right after posting to kick off engagement signals.'],
+  instagram:['Share your Reel to your Story with a sticker overlay to drive extra views.','Reply to all comments within the first hour to signal the algorithm.','Carousels get saved more than any other post type — great for education content.','Post Reels without a TikTok watermark — Instagram suppresses watermarked content.'],
+  threads:['End every Threads post with a question — replies are the only metric that matters here.','Short paragraphs only. Threads readers skim fast.','Reply to every response within 2 hours for maximum visibility.','No hashtags needed on Threads — it is a conversation app not a search engine.'],
+  facebook:['Personal story posts outperform promotional posts 3 to 1 on Facebook.','Post at 8-10am or 6-9pm on weekdays for best organic reach.','Ask a question in the post to boost comment engagement.'],
+  linkedin:['First line is the hook — make it stop the scroll before the see-more cut.','Post Tuesday through Thursday for highest professional audience visibility.','End with a question to generate comments which boosts LinkedIn reach significantly.']
+};
+
+// ── STATE ─────────────────────────────────────────────────────────────────────
+var S = {eco:'blc',plat:'tiktok',mood:'educate',aes:'editorial',fmt:'',iEco:'blc',iAes:'editorial',iMood:'luxury'};
+
+function rnd(a) { return a[Math.floor(Math.random()*a.length)]; }
+function rnds(a,n) { return a.slice().sort(function(){return Math.random()-.5;}).slice(0,n); }
+
+// ── NAV ───────────────────────────────────────────────────────────────────────
+function showScreen(id) {
+  ['home','create','image'].forEach(function(s){
+    document.getElementById('s-'+s).classList.toggle('active', s===id);
+    document.getElementById('n-'+s).classList.toggle('on', s===id);
+  });
+  window.scrollTo(0,0);
+}
+
+// ── PILL BUILDER ─────────────────────────────────────────────────────────────
+function makePills(containerId, items, selectedId, colorFn, clickFn) {
+  var cont = document.getElementById(containerId);
+  cont.innerHTML = '';
+  items.forEach(function(item) {
+    var btn = document.createElement('button');
+    btn.className = 'pill' + (item.id === selectedId ? ' on' : '');
+    btn.textContent = (item.e ? item.e + ' ' : '') + item.name;
+    var col = colorFn(item);
+    if (item.id === selectedId) {
+      btn.style.borderColor = col;
+      btn.style.backgroundColor = hexAlpha(col, 0.15);
+      btn.style.color = col;
+    }
+    btn.addEventListener('click', function(){ clickFn(item.id); });
+    cont.appendChild(btn);
+  });
+}
+
+function hexAlpha(hex, alpha) {
+  var r = parseInt(hex.slice(1,3),16);
+  var g = parseInt(hex.slice(3,5),16);
+  var b = parseInt(hex.slice(5,7),16);
+  return 'rgba('+r+','+g+','+b+','+alpha+')';
+}
+
+// ── BUILD SCREENS ─────────────────────────────────────────────────────────────
+function buildHome() {
+  var grid = document.getElementById('eco-grid');
+  grid.innerHTML = '';
+  Object.values(ECO).forEach(function(e){
+    var card = document.createElement('div');
+    card.className = 'eco-card';
+    card.style.backgroundColor = hexAlpha(e.color, 0.07);
+    card.style.borderColor = hexAlpha(e.color, 0.3);
+    card.innerHTML = '<div style="font-size:22px;margin-bottom:6px;">'+e.emoji+'</div><div style="font-size:11px;font-weight:700;color:'+e.color+';">'+e.short+'</div><div style="font-size:10px;color:#555;margin-top:2px;">'+e.tagline+'</div>';
+    card.addEventListener('click', function(){ S.eco=e.id; showScreen('create'); buildCreate(); });
+    grid.appendChild(card);
+  });
+
+  var list = document.getElementById('plat-list');
+  list.innerHTML = '';
+  Object.values(PLAT).forEach(function(pl){
+    var row = document.createElement('div');
+    row.className = 'plat-row';
+    row.innerHTML = '<div class="plat-ico" style="background:'+hexAlpha(pl.color,0.13)+';color:'+pl.color+';">'+pl.icon+'</div><div><div style="font-size:14px;font-weight:600;">'+pl.name+'</div><div style="font-size:11px;color:#555;">'+pl.formats.slice(0,3).join(' · ')+'</div></div><div style="margin-left:auto;color:#444;font-size:18px;">›</div>';
+    row.addEventListener('click', function(){ S.plat=pl.id; showScreen('create'); buildCreate(); });
+    list.appendChild(row);
+  });
+}
+
+function buildCreate() {
+  var eco = ECO[S.eco];
+  var pl = PLAT[S.plat];
+
+  makePills('c-eco', Object.values(ECO).map(function(e){return{id:e.id,name:e.name,e:e.emoji};}), S.eco, function(item){return ECO[item.id].color;}, function(id){S.eco=id;buildCreate();});
+  makePills('c-plat', Object.values(PLAT).map(function(p){return{id:p.id,name:p.name};}), S.plat, function(item){return PLAT[item.id].color;}, function(id){S.plat=id;S.fmt='';buildCreate();});
+  makePills('c-fmt', pl.formats.map(function(f){return{id:f,name:f};}), S.fmt, function(){return pl.color;}, function(id){S.fmt=S.fmt===id?'':id;buildCreate();});
+  makePills('c-mood', MOODS.map(function(m){return{id:m.id,name:m.label,e:m.e};}), S.mood, function(){return eco.color;}, function(id){S.mood=id;buildCreate();});
+  makePills('c-aes', AES.map(function(a){return{id:a.id,name:a.label,e:a.e};}), S.aes, function(){return eco.color;}, function(id){S.aes=id;buildCreate();});
+
+  var btn = document.getElementById('gen-btn');
+  btn.textContent = 'Generate ' + pl.name + ' Content ' + eco.emoji;
+  btn.style.background = 'linear-gradient(135deg,'+eco.color+','+eco.accent+')';
+}
+
+function buildImgScreen() {
+  var eco = ECO[S.iEco];
+  makePills('i-eco', Object.values(ECO).map(function(e){return{id:e.id,name:e.name,e:e.emoji};}), S.iEco, function(item){return ECO[item.id].color;}, function(id){S.iEco=id;buildImgScreen();});
+  makePills('i-aes', AES.map(function(a){return{id:a.id,name:a.label,e:a.e};}), S.iAes, function(){return eco.color;}, function(id){S.iAes=id;buildImgScreen();});
+  makePills('i-mood', MOODS.map(function(m){return{id:m.id,name:m.label,e:m.e};}), S.iMood, function(){return eco.color;}, function(id){S.iMood=id;buildImgScreen();});
+}
+
+// ── MAKE BLOCK (all event listeners added via JS, zero text in HTML) ───────────
+function makeBlock(label, text, accentColor, openByDefault) {
+  if (!text) return document.createDocumentFragment();
+  var sid = storeText(text);
+
+  var wrap = document.createElement('div');
+  wrap.className = 'block';
+
+  var hdr = document.createElement('div');
+  hdr.className = 'blk-hdr';
+
+  var lbl = document.createElement('span');
+  lbl.className = 'blk-lbl';
+  lbl.style.color = accentColor;
+  lbl.textContent = label;
+
+  var rside = document.createElement('div');
+  rside.style.cssText = 'display:flex;gap:8px;align-items:center;';
+
+  var cpBtn = document.createElement('button');
+  cpBtn.className = 'cp-btn';
+  cpBtn.textContent = 'Copy';
+  cpBtn.addEventListener('click', function(ev){ ev.stopPropagation(); doCopy(sid, cpBtn); });
+
+  var chev = document.createElement('span');
+  chev.style.cssText = 'color:#444;font-size:11px;';
+  chev.textContent = openByDefault ? '▲' : '▼';
+
+  rside.appendChild(cpBtn);
+  rside.appendChild(chev);
+  hdr.appendChild(lbl);
+  hdr.appendChild(rside);
+
+  var body = document.createElement('div');
+  body.className = 'blk-body';
+  body.textContent = text;
+  if (!openByDefault) body.style.display = 'none';
+
+  hdr.addEventListener('click', function(){
+    var open = body.style.display !== 'none';
+    body.style.display = open ? 'none' : 'block';
+    chev.textContent = open ? '▼' : '▲';
+  });
+
+  wrap.appendChild(hdr);
+  wrap.appendChild(body);
+  return wrap;
+}
+
+function appendBlock(container, label, text, color, open) {
+  if (text) container.appendChild(makeBlock(label, text, color, open));
+}
+
+// ── GENERATE ──────────────────────────────────────────────────────────────────
+function doGenerate() {
+  var eco = ECO[S.eco];
+  var pl = PLAT[S.plat];
+  var topic = document.getElementById('topic').value.trim();
+
+  var hookPool = (HOOKS[S.eco] && HOOKS[S.eco][S.mood]) || HOOKS.blc.educate;
+  var hook = topic ? (topic.charAt(0).toUpperCase()+topic.slice(1)+'.') : rnd(hookPool);
+  var cta = rnd(eco.ctas);
+  var signoff = rnd(eco.signoffs);
+
+  var scriptSrc = (SCRIPTS[S.plat] && SCRIPTS[S.plat][S.mood]) || SCRIPTS.tiktok.educate;
+  var rawScript = rnd(Array.isArray(scriptSrc) ? scriptSrc : [scriptSrc]);
+  var script = rawScript.replace(/{HOOK}/g, hook).replace(/{CTA}/g, cta);
+
+  var caption = '';
+  if (S.plat === 'threads') {
+    caption = script;
+  } else if (S.plat === 'instagram') {
+    var pts = script.split('CAPTION:');
+    caption = pts.length > 1 ? pts[1].trim() : hook+'\n\n'+cta+'\n\n'+signoff;
+  } else {
+    caption = hook+'\n\n'+cta+'\n\n'+signoff;
+  }
+
+  var moodTagKey = {healing:'healing',educate:'education',luxury:'softlife',bold:'core',story:'story',sell:'core'}[S.mood] || 'core';
+  var tagPool = (eco.tags.core || []).concat(eco.tags[moodTagKey] || []);
+  var tags = pl.maxTags > 0 ? rnds(tagPool, pl.maxTags) : [];
+  var fmt = S.fmt || rnd(pl.formats);
+  var tip = rnd(TIPS[S.plat] || TIPS.tiktok);
+
+  var scene = rnd(SCENES[S.aes] || SCENES.editorial);
+  var imgMain = eco.imgAlts ? rnd(eco.imgAlts) : eco.imgBase + ' — ' + scene + '.';
+  var negPrompt = eco.id === 'blc' ? 'no glasses, glasses removed, blurry, cartoon, anime, distorted, frizzy hair, blazer, suit jacket' : eco.id === 'hsl' ? 'no glasses, glasses removed, blurry, cartoon, anime, distorted, frizzy hair, office, desk, pen, notebook, corporate' : 'no glasses, glasses removed, blurry, cartoon, anime, distorted, frizzy hair, business suit, corporate';
+  var imgCG = imgMain + ' [ChatGPT/DALL-E: photorealistic portrait, ultra-detailed face, sharp rectangular glasses always on face, lifestyle photography, natural or warm cinematic lighting, magazine quality]';
+  var imgOA = imgMain + ' [OpenArt/Krea: Realistic Vision v5 or Juggernaut XL. Negative prompt: ' + negPrompt + '. CFG 7-8. Steps 30+]';
+  var imgAnim = rnd(ANIM);
+
+  var fullContent = 'HOOK:\n'+hook+(S.plat!=='threads'?'\n\nSCRIPT:\n'+script:'')+'\n\nCAPTION:\n'+caption+(tags.length?'\n\nHASHTAGS:\n'+tags.map(function(t){return '#'+t;}).join(' '):'')+'\n\nCTA: '+cta;
+  var fullImg = 'MAIN PROMPT:\n'+imgMain+'\n\nCHATGPT/DALL-E:\n'+imgCG+'\n\nOPENART/KREA:\n'+imgOA+'\n\nANIMATION:\n'+imgAnim;
+
+  var res = document.getElementById('result');
+  res.innerHTML = '';
+
+  // Header
+  var hdr = document.createElement('div');
+  hdr.className = 'res-hdr';
+  hdr.innerHTML = '<div style="font-size:10px;color:#555;text-transform:uppercase;letter-spacing:.18em;">Your Content</div><div style="display:flex;gap:6px;"><span class="badge" style="background:'+hexAlpha(eco.color,0.13)+';color:'+eco.color+';">'+eco.short+'</span><span class="badge" style="background:'+hexAlpha(pl.color,0.13)+';color:'+pl.color+';">'+pl.name+'</span></div>';
+  res.appendChild(hdr);
+
+  appendBlock(res, 'Hook', hook, eco.color, true);
+  if (S.plat !== 'threads') appendBlock(res, 'Script', script, pl.color, false);
+  appendBlock(res, S.plat==='threads'?'Post Copy':'Caption', caption, eco.color, true);
+  if (tags.length) appendBlock(res, 'Hashtags', tags.map(function(t){return '#'+t;}).join(' '), '#888', true);
+
+  // CTA + Format row
+  var row2 = document.createElement('div');
+  row2.className = 'row2';
+  var ctaBox = document.createElement('div');
+  ctaBox.className = 'box2';
+  ctaBox.style.cssText = 'background:'+hexAlpha(eco.color,0.08)+';border:1px solid '+hexAlpha(eco.color,0.25)+';';
+  ctaBox.innerHTML = '<div class="mini" style="color:'+eco.color+';">CTA</div><div style="font-size:12px;font-weight:600;">→ '+cta+'</div>';
+  var fmtBox = document.createElement('div');
+  fmtBox.className = 'box2';
+  fmtBox.style.cssText = 'background:#111;border:1px solid #1E1E1E;';
+  fmtBox.innerHTML = '<div class="mini" style="color:#555;">Format</div><div style="font-size:12px;color:#888;">'+fmt+'</div>';
+  row2.appendChild(ctaBox);
+  row2.appendChild(fmtBox);
+  res.appendChild(row2);
+
+  // Image section
+  var imgSec = document.createElement('div');
+  imgSec.className = 'img-sec';
+
+  var fiSid = storeText(fullImg);
+  var imgHdr = document.createElement('div');
+  imgHdr.className = 'img-hdr';
+
+  var imgHdrLeft = document.createElement('div');
+  imgHdrLeft.style.cssText = 'display:flex;align-items:center;gap:8px;';
+  imgHdrLeft.innerHTML = '<span style="font-size:15px;">🎨</span><span style="font-size:10px;color:#A07BC8;text-transform:uppercase;letter-spacing:.15em;font-weight:600;">Image &amp; Animation Prompts</span>';
+
+  var imgHdrRight = document.createElement('div');
+  imgHdrRight.style.cssText = 'display:flex;gap:8px;align-items:center;';
+  var fiCpBtn = document.createElement('button');
+  fiCpBtn.className = 'cp-btn';
+  fiCpBtn.textContent = 'Copy All';
+  fiCpBtn.addEventListener('click', function(ev){ ev.stopPropagation(); doCopy(fiSid, fiCpBtn); });
+  var imgChev = document.createElement('span');
+  imgChev.style.cssText = 'color:#444;font-size:11px;';
+  imgChev.textContent = '▼';
+  imgHdrRight.appendChild(fiCpBtn);
+  imgHdrRight.appendChild(imgChev);
+  imgHdr.appendChild(imgHdrLeft);
+  imgHdr.appendChild(imgHdrRight);
+
+  var imgBody = document.createElement('div');
+  imgBody.style.cssText = 'display:none;padding:0 14px 14px;';
+  appendBlock(imgBody, 'Main Prompt — Flow / General', imgMain, '#A07BC8', true);
+  appendBlock(imgBody, 'ChatGPT / DALL-E', imgCG, '#10A37F', false);
+  appendBlock(imgBody, 'OpenArt / Krea', imgOA, '#F77737', false);
+  appendBlock(imgBody, 'Animation / Video', imgAnim, '#C8A951', false);
+
+  imgHdr.addEventListener('click', function(){
+    var open = imgBody.style.display !== 'none';
+    imgBody.style.display = open ? 'none' : 'block';
+    imgChev.textContent = open ? '▼' : '▲';
+  });
+
+  imgSec.appendChild(imgHdr);
+  imgSec.appendChild(imgBody);
+  res.appendChild(imgSec);
+
+  // Tip
+  var tipBox = document.createElement('div');
+  tipBox.className = 'tip-box';
+  tipBox.innerHTML = '<div class="mini" style="color:#444;">Posting Tip</div><div style="font-size:12px;color:#666;line-height:1.6;">'+tip+'</div>';
+  res.appendChild(tipBox);
+
+  // Full copy button
+  var fcSid = storeText(fullContent);
+  var fcBtn = document.createElement('button');
+  fcBtn.className = 'big-cp';
+  fcBtn.textContent = 'Copy Full Content Package';
+  fcBtn.addEventListener('click', function(){ doCopy(fcSid, fcBtn); });
+  res.appendChild(fcBtn);
+
+  res.scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+// ── GENERATE IMAGE ────────────────────────────────────────────────────────────
+function doGenImg() {
+  var eco = ECO[S.iEco];
+  var customScene = document.getElementById('img-scene').value.trim();
+  var scene = customScene || rnd(SCENES[S.iAes] || SCENES.editorial);
+  var imgMain = eco.imgAlts ? rnd(eco.imgAlts) : eco.imgBase + ' — ' + scene + '.';
+  var negPrompt = eco.id === 'blc' ? 'no glasses, glasses removed, blurry, cartoon, anime, distorted, frizzy hair, blazer, suit jacket' : eco.id === 'hsl' ? 'no glasses, glasses removed, blurry, cartoon, anime, distorted, frizzy hair, office, desk, pen, notebook, corporate' : 'no glasses, glasses removed, blurry, cartoon, anime, distorted, frizzy hair, business suit, corporate';
+  var imgCG = imgMain + ' [ChatGPT/DALL-E: photorealistic portrait, ultra-detailed face, sharp rectangular glasses always on face, lifestyle photography, natural or warm cinematic lighting, magazine quality]';
+  var imgOA = imgMain + ' [OpenArt/Krea: Realistic Vision v5 or Juggernaut XL. Negative prompt: ' + negPrompt + '. CFG 7-8. Steps 30+]';
+  var imgAnim = rnd(ANIM);
+  var fullImg = 'MAIN PROMPT:\n'+imgMain+'\n\nCHATGPT/DALL-E:\n'+imgCG+'\n\nOPENART/KREA:\n'+imgOA+'\n\nANIMATION:\n'+imgAnim;
+
+  var res = document.getElementById('img-result');
+  res.innerHTML = '';
+
+  var lbl = document.createElement('div');
+  lbl.style.cssText = 'font-size:10px;color:#555;text-transform:uppercase;letter-spacing:.18em;margin-top:28px;margin-bottom:14px;';
+  lbl.textContent = 'Your Prompts';
+  res.appendChild(lbl);
+
+  appendBlock(res, 'Main Prompt — Flow / General', imgMain, '#A07BC8', true);
+  appendBlock(res, 'ChatGPT / DALL-E', imgCG, '#10A37F', false);
+  appendBlock(res, 'OpenArt / Krea', imgOA, '#F77737', false);
+  appendBlock(res, 'Animation / Video', imgAnim, '#C8A951', false);
+
+  var allSid = storeText(fullImg);
+  var allBtn = document.createElement('button');
+  allBtn.className = 'big-cp';
+  allBtn.style.marginTop = '12px';
+  allBtn.textContent = 'Copy All Prompts';
+  allBtn.addEventListener('click', function(){ doCopy(allSid, allBtn); });
+  res.appendChild(allBtn);
+
+  res.scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+// ── WIRE UP ───────────────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', function(){
+  document.getElementById('n-home').addEventListener('click', function(){ showScreen('home'); });
+  document.getElementById('n-create').addEventListener('click', function(){ showScreen('create'); buildCreate(); });
+  document.getElementById('n-image').addEventListener('click', function(){ showScreen('image'); buildImgScreen(); });
+  document.getElementById('back-create').addEventListener('click', function(){ showScreen('home'); });
+  document.getElementById('back-image').addEventListener('click', function(){ showScreen('home'); });
+  document.getElementById('home-img-btn').addEventListener('click', function(){ showScreen('image'); buildImgScreen(); });
+  document.getElementById('gen-btn').addEventListener('click', doGenerate);
+  document.getElementById('gen-img-btn').addEventListener('click', doGenImg);
+  buildHome();
+  buildCreate();
+  buildImgScreen();
+});
+</script>
+</body>
+</html>
